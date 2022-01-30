@@ -20,6 +20,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -70,6 +72,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
     private JSONArray mInitDeviceSetupArgs;
     private int mCurrentNotificationId = 1;
     private String mCurrentNotificationText;
+    private Vibrator mVibrator;
 
     Call.Listener mCallListener = callListener();
 
@@ -220,6 +223,9 @@ public class TwilioVoicePlugin extends CordovaPlugin {
         // initialize sound SoundPoolManager
         SoundPoolManager.getInstance(cordova.getActivity());
 
+        // initialize vibrator
+        mVibrator = (Vibrator) cordova.getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
         Context context = cordova.getActivity().getApplicationContext();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -367,6 +373,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
     private void acceptCallInvite(JSONArray arguments, final CallbackContext callbackContext) {
         SoundPoolManager.getInstance(cordova.getActivity()).stopRinging();
+        mVibrator.cancel();
         if (mCallInvite == null) {
             if (callbackContext != null) {
                 callbackContext.sendPluginResult(new PluginResult(
@@ -390,6 +397,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
     private void rejectCallInvite(JSONArray arguments, final CallbackContext callbackContext) {
         SoundPoolManager.getInstance(cordova.getActivity()).stopRinging();
+        mVibrator.cancel();
         if (mCallInvite == null) {
             if (callbackContext != null) {
                 callbackContext.sendPluginResult(new PluginResult(
@@ -413,6 +421,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
     private void disconnect(JSONArray arguments, final CallbackContext callbackContext) {
         SoundPoolManager.getInstance(cordova.getActivity()).stopRinging();
+        mVibrator.cancel();
         if (mCall == null) {
             callbackContext.sendPluginResult(new PluginResult(
                     PluginResult.Status.ERROR));
@@ -483,6 +492,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
     private void handleCancel() {
         Log.d(TAG, "handleCancel()");
         SoundPoolManager.getInstance(cordova.getActivity()).stopRinging();
+        mVibrator.cancel();
         if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
             alertDialog = null;
@@ -659,6 +669,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
     public void onDestroy() {
         //lifecycle events
         SoundPoolManager.getInstance(cordova.getActivity()).release();
+        mVibrator.cancel();
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(cordova.getActivity());
         lbm.unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
@@ -707,6 +718,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                 javascriptCallback("oncallinvitereceived", callInviteProperties, mInitCallbackContext);
             } else {
                 SoundPoolManager.getInstance(cordova.getActivity()).stopRinging();
+                mVibrator.cancel();
                 Log.d(TAG, "oncallinvitecanceled");
                 javascriptCallback("oncallinvitecanceled", mInitCallbackContext);
             }
@@ -756,6 +768,14 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
     private void showIncomingCallDialog() {
         SoundPoolManager.getInstance(cordova.getActivity()).playRinging();
+
+        long[] pattern = { 500, 300 };
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .build();
+        mVibrator.vibrate(pattern, 0, audioAttributes);
+
         if (mCallInvite != null) {
             if (alertDialog != null && alertDialog.isShowing()) {
                 alertDialog.dismiss();

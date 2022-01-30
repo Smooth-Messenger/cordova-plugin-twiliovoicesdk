@@ -38,6 +38,10 @@
 
         <dependency id="cordova-plugin-device"/>
         <dependency id="cordova-plugin-android-permissions"/>
+        
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.VIBRATE" />
+        </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <!-- [START fcm_listener] -->
