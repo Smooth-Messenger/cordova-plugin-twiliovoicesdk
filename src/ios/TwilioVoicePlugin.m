@@ -377,9 +377,6 @@ static NSString *const kTwimlParamTo = @"To";
     if (self.callInvite.to) {
         callInviteProperties[@"to"] = self.callInvite.to;
     }
-    if (self.callInvite.callSid) {
-        callInviteProperties[@"callSid"] = self.callInvite.callSid;
-    }
     
     self.callInvite = nil;
     [self incomingPushHandled];
@@ -401,9 +398,6 @@ static NSString *const kTwimlParamTo = @"To";
         }
         if (callInvite.to) {
             callInviteProperties[@"to"] = callInvite.to;
-        }
-        if (callInvite.callSid) {
-            callInviteProperties[@"callSid"] = callInvite.callSid;
         }
         if (callInvite.customParameters) {
             NSString *conferenceFriendlyName = callInvite.customParameters[@"ConferenceFriendlyName"];
@@ -470,9 +464,6 @@ static NSString *const kTwimlParamTo = @"To";
     if (call.to) {
         callProperties[@"to"] = call.to;
     }
-    if (call.sid) {
-        callProperties[@"callSid"] = call.sid;
-    }
     callProperties[@"isMuted"] = [NSNumber numberWithBool:call.isMuted];
     NSString *callState = [self stringFromCallState:call.state];
     if (callState) {
@@ -515,9 +506,6 @@ static NSString *const kTwimlParamTo = @"To";
     }
     if (call.to) {
         callProperties[@"to"] = call.to;
-    }
-    if (call.sid) {
-        callProperties[@"callSid"] = call.sid;
     }
     
     self.call = nil;
@@ -678,9 +666,6 @@ static NSString *const kTwimlParamTo = @"To";
         }
         if (self.callInvite.to) {
             callInviteProperties[@"to"] = self.callInvite.to;
-        }
-        if (self.callInvite.callSid) {
-            callInviteProperties[@"callSid"] = self.callInvite.callSid;
         }
         
         [self.callInvite reject];

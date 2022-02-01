@@ -169,7 +169,6 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                 try {
                     callProperties.putOpt("from", call.getFrom());
                     callProperties.putOpt("to", call.getTo());
-                    callProperties.putOpt("callSid", call.getSid());
                     callProperties.putOpt("isMuted", call.isMuted());
                     setAudioFocus(true);
                 } catch (JSONException e) {
@@ -194,7 +193,6 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                 try {
                     callProperties.putOpt("from", mCall.getFrom());
                     callProperties.putOpt("to", mCall.getTo());
-                    callProperties.putOpt("callSid", mCall.getSid());
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
@@ -506,7 +504,6 @@ public class TwilioVoicePlugin extends CordovaPlugin {
         try {
             callInviteProperties.putOpt("from", mCallInvite.getFrom());
             callInviteProperties.putOpt("to", mCallInvite.getTo());
-            callInviteProperties.putOpt("callSid", mCallInvite.getCallSid());
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage(), e);
         }
@@ -710,7 +707,6 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                 try {
                     callInviteProperties.putOpt("from", mCallInvite.getFrom());
                     callInviteProperties.putOpt("to", mCallInvite.getTo());
-                    callInviteProperties.putOpt("callSid", mCallInvite.getCallSid());
 
                     String conferenceFriendlyName = mCallInvite.getCustomParameters().get("ConferenceFriendlyName");
                     if (conferenceFriendlyName != null) {
@@ -830,7 +826,6 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                     try {
                         callInviteProperties.putOpt("from", mCallInvite.getFrom());
                         callInviteProperties.putOpt("to", mCallInvite.getTo());
-                        callInviteProperties.putOpt("callSid", mCallInvite.getCallSid());
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage(), e);
                     }
