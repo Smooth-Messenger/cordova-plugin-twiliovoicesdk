@@ -405,6 +405,12 @@ static NSString *const kTwimlParamTo = @"To";
         if (callInvite.callSid) {
             callInviteProperties[@"callSid"] = callInvite.callSid;
         }
+        if (callInvite.customParameters) {
+            NSString *conferenceFriendlyName = callInvite.customParameters[@"ConferenceFriendlyName"];
+            if (conferenceFriendlyName != nil) {
+                callInviteProperties[@"conferenceFriendlyName"] = conferenceFriendlyName;
+            }
+        }
         
         if (self.enableCallKit) {
             [self reportIncomingCallFrom:(self.maskIncomingPhoneNumber ? @"Unknown" : callInvite.from) withUUID:callInvite.uuid];
