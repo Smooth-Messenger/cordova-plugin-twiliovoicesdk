@@ -806,7 +806,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
         alertDialogBuilder.setTitle("Incoming Call");
         alertDialogBuilder.setPositiveButton("Accept", answerCallClickListener);
         alertDialogBuilder.setNegativeButton("Reject", cancelClickListener);
-        alertDialogBuilder.setMessage(callInvite.getFrom() + " is calling with " + callInvite.getCallerInfo().isVerified() + " status");
+        alertDialogBuilder.setMessage(callInvite.getFrom() + " is calling...");
         return alertDialogBuilder.create();
     }
 
