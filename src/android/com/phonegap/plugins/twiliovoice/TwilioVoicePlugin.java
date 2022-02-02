@@ -709,8 +709,12 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                     callInviteProperties.putOpt("to", mCallInvite.getTo());
 
                     String conferenceFriendlyName = mCallInvite.getCustomParameters().get("ConferenceFriendlyName");
+                    String contactName = mCallInvite.getCustomParameters().get("contactName");
                     if (conferenceFriendlyName != null) {
                         callInviteProperties.putOpt("conferenceFriendlyName", conferenceFriendlyName);
+                    }
+                    if (contactName != null) {
+                        callInviteProperties.putOpt("contactName", contactName);
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage(), e);

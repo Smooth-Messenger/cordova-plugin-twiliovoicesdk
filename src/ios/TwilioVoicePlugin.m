@@ -401,8 +401,12 @@ static NSString *const kTwimlParamTo = @"To";
         }
         if (callInvite.customParameters) {
             NSString *conferenceFriendlyName = callInvite.customParameters[@"ConferenceFriendlyName"];
+            NSString *contactName = callInvite.customParameters[@"contactName"];
             if (conferenceFriendlyName != nil) {
                 callInviteProperties[@"conferenceFriendlyName"] = conferenceFriendlyName;
+            }
+            if (contactName != nil) {
+                callInviteProperties[@"contactName"] = contactName;
             }
         }
         
