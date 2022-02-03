@@ -694,7 +694,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
             CallInvite callInvite = intent.getParcelableExtra(INCOMING_CALL_INVITE);
             int callNotificationId = intent.getIntExtra(INCOMING_CALL_NOTIFICATION_ID, 0);
 
-            if (mCallInvite != null && mCall != null) {
+            if (mCallInvite == null && mCall == null) {
                 mCallInvite = callInvite;
                 mCallNotificationId = callNotificationId;
 
