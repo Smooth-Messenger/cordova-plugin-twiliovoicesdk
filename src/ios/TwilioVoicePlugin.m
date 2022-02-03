@@ -392,6 +392,7 @@ static NSString *const kTwimlParamTo = @"To";
     if (self.callInvite == nil && self.call == nil) {
         self.callInvite = callInvite;
         
+        NSString *contactName;
         NSMutableDictionary *callInviteProperties = [NSMutableDictionary new];
         if (callInvite.from) {
             callInviteProperties[@"from"] = callInvite.from;
@@ -401,7 +402,7 @@ static NSString *const kTwimlParamTo = @"To";
         }
         if (callInvite.customParameters) {
             NSString *conferenceFriendlyName = callInvite.customParameters[@"ConferenceFriendlyName"];
-            NSString *contactName = callInvite.customParameters[@"contactName"];
+            contactName = callInvite.customParameters[@"contactName"];
             if (conferenceFriendlyName != nil) {
                 callInviteProperties[@"conferenceFriendlyName"] = conferenceFriendlyName;
             }
@@ -411,7 +412,8 @@ static NSString *const kTwimlParamTo = @"To";
         }
         
         if (self.enableCallKit) {
-            [self reportIncomingCallFrom:(self.maskIncomingPhoneNumber ? @"Unknown" : callInvite.from) withUUID:callInvite.uuid];
+            NSString *name = contactName ? contactName : callInvite.from;
+            [self reportIncomingCallFrom:(self.maskIncomingPhoneNumber ? @"Unknown" : name) withUUID:callInvite.uuid];
         } else {
             [self showNotification:(self.maskIncomingPhoneNumber ? @"Unknown" : callInvite.from)];
             //play ringtone

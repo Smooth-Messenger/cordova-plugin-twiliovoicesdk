@@ -801,13 +801,19 @@ public class TwilioVoicePlugin extends CordovaPlugin {
             CallInvite callInvite,
             DialogInterface.OnClickListener answerCallClickListener,
             DialogInterface.OnClickListener cancelClickListener) {
+
+        String contactName = callInvite.getCustomParameters().get("contactName");
+        if (contactName == null) {
+            contactName = callInvite.getFrom();
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setIcon(R.drawable.ic_call_black_24dp);
         alertDialogBuilder.setTitle("Incoming Call");
         alertDialogBuilder.setPositiveButton("Accept", answerCallClickListener);
         alertDialogBuilder.setNegativeButton("Reject", cancelClickListener);
-        alertDialogBuilder.setMessage(callInvite.getFrom() + " is calling...");
+        alertDialogBuilder.setMessage(contactName + " is calling...");
         return alertDialogBuilder.create();
     }
 

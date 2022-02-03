@@ -107,6 +107,11 @@ public class VoiceFirebaseMessagingService extends FirebaseMessagingService {
         extras.putInt(NOTIFICATION_ID_KEY, notificationId);
         extras.putString(CALL_SID_KEY, callSid);
 
+        String contactName = callInvite.getCustomParameters().get("contactName");
+        if (contactName == null) {
+            contactName = callInvite.getFrom();
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel callInviteChannel = new NotificationChannel(VOICE_CHANNEL,
                     "Primary Voice Channel", NotificationManager.IMPORTANCE_DEFAULT);
@@ -114,7 +119,7 @@ public class VoiceFirebaseMessagingService extends FirebaseMessagingService {
             callInviteChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             notificationManager.createNotificationChannel(callInviteChannel);
 
-            notification = buildNotification(callInvite.getFrom() + " is calling", pendingIntent, extras);
+            notification = buildNotification(contactName + " is calling", pendingIntent, extras);
             notificationManager.notify(notificationId, notification);
         } else {
             int iconIdentifier = getResources().getIdentifier("icon", "mipmap", getPackageName());
@@ -124,7 +129,7 @@ public class VoiceFirebaseMessagingService extends FirebaseMessagingService {
             if (contentTitle == null) {
                 contentTitle = "Incoming Call";
             }
-            final String from = callInvite.getFrom() + " is calling";
+            final String from = contactName + " is calling";
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this)
