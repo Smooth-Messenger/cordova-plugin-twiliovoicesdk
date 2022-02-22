@@ -702,16 +702,21 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
                 JSONObject callInviteProperties = new JSONObject();
                 try {
+                    callInviteProperties.putOpt("dialCallSid", mCallInvite.getCallSid());
                     callInviteProperties.putOpt("from", mCallInvite.getFrom());
                     callInviteProperties.putOpt("to", mCallInvite.getTo());
 
                     String conferenceFriendlyName = mCallInvite.getCustomParameters().get("ConferenceFriendlyName");
                     String contactName = mCallInvite.getCustomParameters().get("contactName");
+                    String callSid = mCallInvite.getCustomParameters().get("CallSid");
                     if (conferenceFriendlyName != null) {
                         callInviteProperties.putOpt("conferenceFriendlyName", conferenceFriendlyName);
                     }
                     if (contactName != null) {
                         callInviteProperties.putOpt("contactName", contactName);
+                    }
+                    if (callSid != null) {
+                        callInviteProperties.putOpt("callSid", callSid);
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, e.getMessage(), e);

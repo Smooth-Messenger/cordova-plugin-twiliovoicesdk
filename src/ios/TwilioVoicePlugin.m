@@ -394,6 +394,9 @@ static NSString *const kTwimlParamTo = @"To";
         
         NSString *contactName;
         NSMutableDictionary *callInviteProperties = [NSMutableDictionary new];
+        if (self.callInvite.callSid) {
+            callInviteProperties[@"dialCallSid"] = self.callInvite.callSid;
+        }
         if (callInvite.from) {
             callInviteProperties[@"from"] = callInvite.from;
         }
@@ -402,12 +405,16 @@ static NSString *const kTwimlParamTo = @"To";
         }
         if (callInvite.customParameters) {
             NSString *conferenceFriendlyName = callInvite.customParameters[@"ConferenceFriendlyName"];
+            NSString *callSid = callInvite.customParameters[@"CallSid"];
             contactName = callInvite.customParameters[@"contactName"];
             if (conferenceFriendlyName != nil) {
                 callInviteProperties[@"conferenceFriendlyName"] = conferenceFriendlyName;
             }
             if (contactName != nil) {
                 callInviteProperties[@"contactName"] = contactName;
+            }
+            if (callSid != nil) {
+                callInviteProperties[@"callSid"] = callSid;
             }
         }
         
