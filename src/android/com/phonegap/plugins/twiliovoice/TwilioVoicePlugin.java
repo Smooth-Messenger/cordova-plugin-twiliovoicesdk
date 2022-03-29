@@ -1,6 +1,5 @@
 package com.phonegap.plugins.twiliovoice;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -21,16 +20,12 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.installations.FirebaseInstallations;
-import com.google.firebase.installations.InstallationTokenResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.twilio.voice.Call;
 import com.twilio.voice.CallException;
@@ -105,6 +100,7 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
     public static final String KEY_FCM_TOKEN = "FCM_TOKEN";
 
+    private PowerManager.WakeLock wakeLock;
     private AudioManager audioManager;
     private int savedAudioMode = AudioManager.MODE_INVALID;
     private AlertDialog alertDialog;
@@ -175,6 +171,10 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                     Log.e(TAG, e.getMessage(), e);
                 }
                 javascriptCallback("oncalldidconnect", callProperties, mInitCallbackContext);
+
+                if (wakeLock != null && !wakeLock.isHeld()) {
+                    wakeLock.acquire(10*60*1000L /*10 minutes*/);
+                }
             }
 
             @Override
@@ -200,6 +200,9 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                 mCall = null;
                 setAudioFocus(false);
                 javascriptCallback("oncalldiddisconnect", callProperties, mInitCallbackContext);
+                if (wakeLock != null && wakeLock.isHeld()) {
+                    wakeLock.release();
+                }
             }
 
             @Override
@@ -207,11 +210,13 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                 mCall = null;
                 setAudioFocus(false);
                 javascriptErrorback(exception.getErrorCode(), exception.getMessage(), mInitCallbackContext);
+
+                if (wakeLock != null && wakeLock.isHeld()) {
+                    wakeLock.release();
+                }
             }
         };
     }
-
-    ;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -226,6 +231,11 @@ public class TwilioVoicePlugin extends CordovaPlugin {
 
         Context context = cordova.getActivity().getApplicationContext();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (powerManager.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK)) {
+            wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG + ":PowerManager");
+        }
 
         // Handle an incoming call intent if launched from a notification
         Intent intent = cordova.getActivity().getIntent();
@@ -361,6 +371,10 @@ public class TwilioVoicePlugin extends CordovaPlugin {
                             .params(map)
                             .build();
                     mCall = Voice.connect(cordova.getActivity(), connectOptions, mCallListener);
+
+                    if (wakeLock != null && !wakeLock.isHeld()) {
+                        wakeLock.acquire(10*60*1000L /*10 minutes*/);
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
                 }
