@@ -122,7 +122,10 @@ public class VoiceFirebaseMessagingService extends FirebaseMessagingService {
             notification = buildNotification(contactName + " is calling", pendingIntent, extras);
             notificationManager.notify(notificationId, notification);
         } else {
-            int iconIdentifier = getResources().getIdentifier("icon", "mipmap", getPackageName());
+            int iconIdentifier = getResources().getIdentifier("ic_launcher", "mipmap", getPackageName());
+            if (iconIdentifier == 0) {
+                iconIdentifier = getResources().getIdentifier("ic_launcher", "drawable", getPackageName());
+            }
             int incomingCallAppNameId = (int) getResources().getIdentifier("incoming_call_app_name", "string", getPackageName());
             String contentTitle = getString(incomingCallAppNameId);
 
